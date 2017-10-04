@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css.css"/>
+	<link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet">
+	
+	<script src="./js/jquery.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$("#caixa").hide();
+			$("#aparecer-caixa").click(function(){
+				$("#caixa").slideToggle();
+			});
+			$("#aviso").hide();
+			$("#estatisticas").hide();
+			$("#texto").keyup(function(){
+				var caracteres=$("#texto").val();
+				$("#qtd").text(140-caracteres.length);
+				if((140-caracteres.length)==0){
+					$("#aviso").fadeIn();
+				}
+				if((140-caracteres.length)>0){
+					$("#aviso").hide();
+				}
+			});
+			
+			$("#botao").click(function(){
+				$("#estatisticas").fadeIn();
+				$("#titulo-div").html("Estatísticas do texto");
+				
+			
+				var texto= $("#texto").val();
+				
+				$("#numeroCaracteres").html("<strong>Número de caracteres:</strong>"+texto.length);
+				
+				var numeroPalavra=texto.split(" ");
+				
+				if(numeroPalavra[0]==""){
+					$("#numeroPalavra").html("<strong>Número de palavras:</strong> 0");
+				}else{
+					$("#numeroPalavra").html("<strong>Número de palavras:</strong>"+(numeroPalavra.length));
+				}
+				
+				var ocorrencias=[];
+				var palavraComum={"palavra":"nome", "ocorrencia":"vezes"}
+				
+				$.each(numeroPalavra, function(ind, obj){
+				var vezes=0;
+					$.each(numeroPalavra, function(i, objeto){
+						if(obj==objeto){
+							vezes++;
+						}
+					});
+					
+					palavraComum.palavra=obj;
+					palavraComum.ocorrencia=vezes;
+					ocorrencias.push(palavraComum);
+					
+				});
+				
+				var vezes=0;
+				var MaisOcorrida=" ";
+				$.each(ocorrencias, function(i, objeto){
+					if(objeto.ocorrencia>vezes){
+						MaisOcorrida=objeto.palavra;
+						vezes=objeto.ocorrencia;
+					}			
+				});
+				if(vezes>1){
+					$("#palavraComum").html("<strong>Palavra mais comum: </strong>"+(MaisOcorrida));
+				}else{
+					$("#palavraComum").html("<strong>Palavra mais comum: </strong> Não há palavra mais comum");
+				}
+
+			});
+			//botao fechar
+			var span = document.getElementById("fecha");
+			span.onclick = function() {
+				$("#estatisticas").hide();
+			}	
+		
+		});
+	</script>
+	
+</head>
+<body>
+<h1 id="aparecer-caixa"> Diga algo! </h1>
+<div id="estatisticas">
+		<span id="fecha" class="close">&times;</span>
+		<h1 id="titulo-div"></h1>
+		<p id="numeroCaracteres"></p>
+		<p id="numeroPalavra"></p>
+		<p id="palavraComum"></p>
+</div>
+<div id="caixa">
+	<textarea maxlength="140" id="texto" placeholder="Digite um texto" rows="10" cols="40"></textarea><br/>
+	<button id="botao">Enviar Texto</button>
+	<p id="qtd">140</p>
+	<p id="aviso"><img src="./img/aviso.png">Quantidade máxima atingida!</p>
+</div>
+</body>
+</html>
